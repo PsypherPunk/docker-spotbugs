@@ -4,12 +4,14 @@ RUN mkdir -p /spotbugs
 
 WORKDIR /spotbugs
 
-RUN echo -e "\n3b800628cea8338030f33874fcf6d21425b9ed59 spotbugs-3.1.12.zip\nf8b7b42c7008ad126ac12b5ee4ade33ca9ef56a1 findsecbugs-plugin-1.9.0.jar" > sha1sum.txt && \
-    wget --quiet http://repo.maven.apache.org/maven2/com/github/spotbugs/spotbugs/3.1.12/spotbugs-3.1.12.zip && \
-    wget --quiet http://repo.maven.apache.org/maven2/com/h3xstream/findsecbugs/findsecbugs-plugin/1.9.0/findsecbugs-plugin-1.9.0.jar && \
+RUN echo -e "da234794c8947c92db89f79b4ced7b2df0bf40a6  spotbugs-4.0.1.zip\nfad67bc6c31032dd3cf7419c1f4abe2376658757  findsecbugs-cli-1.10.1.zip" > sha1sum.txt && \
+    wget --quiet https://github.com/spotbugs/spotbugs/releases/download/4.0.1/spotbugs-4.0.1.zip && \
+    wget --quiet https://github.com/find-sec-bugs/find-sec-bugs/releases/download/version-1.10.1/findsecbugs-cli-1.10.1.zip && \
     sha1sum -c sha1sum.txt && \
-    unzip spotbugs-3.1.12.zip && \
-    rm spotbugs-3.1.12.zip
+    unzip -o spotbugs-4.0.1.zip && \
+    rm spotbugs-4.0.1.zip && \
+    unzip -oj findsecbugs-cli-1.10.1.zip lib/findsecbugs-plugin-1.10.1.jar && \
+    rm findsecbugs-cli-1.10.1.zip
 
 RUN groupadd -g 999 spotbugs && \
     useradd -r -u 999 -g spotbugs spotbugs && \
@@ -19,11 +21,11 @@ USER spotbugs:spotbugs
 
 CMD ["java",                                       \
      "-jar",                                       \
-     "/spotbugs/spotbugs-3.1.12/lib/spotbugs.jar", \
+     "/spotbugs/spotbugs-4.0.1/lib/spotbugs.jar", \
      "-textui",                                    \
      "-html",                                      \
      "-exitcode",                                  \
      "-pluginList",                                \
-     "/spotbugs/findsecbugs-plugin-1.9.0.jar",     \
+     "/spotbugs/findsecbugs-plugin-1.10.1.jar",     \
      "/spotbugs/build/"]
 
